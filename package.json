@@ -1,0 +1,41 @@
+{
+  "name": "mosaic-vcs",
+  "version": "0.0.1",
+  "description": "A basic version control system",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R spec ./test/index.js",
+    "bump": "npm test && webpack && npm version patch && git push && git push --tags && npm publish",
+    "bump-minor": "npm run bump && npm version minor && git push && git push --tags && npm publish",
+    "commit": "npm test && webpack && git commit -a"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mosaicjs/mosaic-vcs.git"
+  },
+  "keywords": [
+    "promise",
+    "intent"
+  ],
+  "author": "Mikhail Kotelnikov <mikhail.kotelnikov@ubimix.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mosaicjs/mosaic-vcs/issues"
+  },
+  "devDependencies": {
+    "babel": "^5.6.14",
+    "babel-core": "^5.6.15",
+    "babel-loader": "^5.3.0",
+    "expect.js": "^0.3.1",
+    "mocha": "^2.2.5",
+    "node-libs-browser": "^0.5.2",
+    "webpack": "^1.10.1"
+  },
+  "dependencies": {
+    "promise": "^7.0.3"
+  },
+  "homepage": "https://github.com/mosaicjs/mosaic-vcs#readme",
+  "directories": {
+    "test": "test"
+  }
+}
