@@ -1,5 +1,6 @@
 import expect from 'expect.js';
 import { VersionControl } from '../';
+import { Digest } from '../';
 
 export default class VersionControlTestLib {
     
@@ -32,6 +33,54 @@ export default class VersionControlTestLib {
                 if (error) throw error;
             }).then(done, done);
         });
+        this._testBlobs();
+        this._testMimeTypes();
+    }
+    
+    _testBlobs(){
+        let that = this;
+        it ('should store / load blobs', function(done){
+            let content = new Buffer('This is a content', 'UTF-8');
+            let hash = Digest.digest(content);
+            let id;
+            Promise.resolve()
+            
+            // Store a blob and check that it is available
+            .then(function(){
+                return that.store.storeBlob({
+                    content : content
+                 });
+            }).then(function(info){
+                expect(!!info).to.be(true);
+                expect(info.length).to.eql(content.length);
+                expect(info.hash).to.eql(hash);
+                expect(!!info.id).to.be(true);
+                id = info.id;
+            })
+            
+            // Load blob by id
+            .then(function(){
+                return that.store.loadBlob({id});
+            }).then(function(info){
+                expect(info.hash).to.eql(hash);
+                expect(info.id).to.eql(id);
+                expect(!!info.content).to.be(true);
+                expect(Digest.digest(info.content)).to.eql(hash);
+            })
+            
+            // Delete blob 
+            .then(function(info){
+                return that.store.deleteBlob({id});
+            }).then(function(){
+                return that.store.loadBlob({id});
+            }).then(function(info){
+                expect(info).to.be(undefined);
+            }).then(done, done);
+        });
+    }
+    
+    _testMimeTypes(){
+        let that = this;
         it('should return an empty list of mime types', function(done) {
             that.store.loadMimeTypes().then(function(mimes){
                 expect(mimes).to.eql({});
