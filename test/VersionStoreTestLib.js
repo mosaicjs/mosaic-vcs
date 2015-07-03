@@ -40,7 +40,8 @@ export default class VersionControlTestLib {
     _testBlobs(){
         let that = this;
         it ('should store / load blobs', function(done){
-            let content = new Buffer('This is a content', 'UTF-8');
+            let str = 'This is a content';
+            let content = new Buffer(str, 'UTF-8');
             let hash = Digest.digest(content);
             let id;
             Promise.resolve()
@@ -66,6 +67,7 @@ export default class VersionControlTestLib {
                 expect(info.id).to.eql(id);
                 expect(!!info.content).to.be(true);
                 expect(Digest.digest(info.content)).to.eql(hash);
+                expect(info.content.toString()).to.eql(str);
             })
             
             // Delete blob 
