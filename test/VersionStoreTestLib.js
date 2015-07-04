@@ -36,7 +36,6 @@ export default class VersionControlTestLib {
         this._testRevInfo();
         this._testPaths();
         this._testBlobs();
-        this._testMimeTypes();
     }
 
     _testRevInfo() {
@@ -150,29 +149,6 @@ export default class VersionControlTestLib {
                 return that.store.loadBlob({id});
             }).then(function(info){
                 expect(info).to.be(undefined);
-            });
-        });
-    }
-    
-    _testMimeTypes(){
-        let that = this;
-        that._read('should return an empty list of mime types', function() {
-            return that.store.loadMimeTypes().then(function(mimes){
-                expect(mimes).to.eql({});
-            });
-        });
-        that._read('should be able to register new mime types', function() {
-            let list = ['text/plain', 'text/x-diff', 'application/binary'];
-            let index;
-            return that.store.storeMimeTypes({
-                types: list
-            }).then(function(mimes){
-                expect(Object.keys(mimes).sort()).to.eql(list.sort());
-                index = mimes;
-            }).then(function(){
-                return that.store.loadMimeTypes({types: list}).then(function(mimes){
-                    expect(mimes).to.eql(index);
-                });
             });
         });
     }
