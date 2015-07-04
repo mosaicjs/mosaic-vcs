@@ -33,8 +33,31 @@ export default class VersionControlTestLib {
                 if (error) throw error;
             }).then(done, done);
         });
+        this._testFileNames();
         this._testBlobs();
         this._testMimeTypes();
+    }
+    
+    _testFileNames() {
+        let that = this;
+        it('should store/read file names', function(done){
+            let paths = ['foo/bar/file.doc', 'foo/bar/toto.pdf', 'foo/about.md'];
+            let pathIndex;
+            Promise.resolve()
+            .then(function(){
+                return that.store.storePaths({paths}).then(function(info){
+                    expect(!!info).to.be(true);
+                    expect(Object.keys(info).sort()).to.eql(paths.sort());
+                    pathIndex = info;
+                });
+            })
+            .then(function(){
+                return that.store.loadPaths({paths}).then(function(info){
+                    expect(info).to.eql(pathIndex);
+                })
+            })
+            .then(done, done);
+        });
     }
     
     _testBlobs(){

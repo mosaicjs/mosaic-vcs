@@ -32,6 +32,7 @@
     "webpack": "^1.10.1"
   },
   "dependencies": {
+    "diff-match-patch": "^1.0.0",
     "promise": "^7.0.3"
   },
   "homepage": "https://github.com/mosaicjs/mosaic-vcs#readme",
