@@ -44,19 +44,13 @@ export default class VersionControlTestLib {
         that._write('should store/read revision information', function(){
             let content = new Buffer('Hello, world', 'UTF-8');
             let hash = Digest.digest(content);
-            let nameId = 1;
-            let mimeId = 2;
-            let contentId = 3;
-            let diffId = 4;
-            let stamp = new Date().getTime();
+            let contentId = 2;
+            let diffId = 3;
             let revInfo = {
-                nid : nameId,
-                mid : mimeId,
                 length: content.length,
                 hash: hash,
                 content: contentId,
-                diff: diffId,
-                stamp: stamp
+                diff: diffId
             };
             let revId;
             return Promise.resolve()
@@ -65,26 +59,30 @@ export default class VersionControlTestLib {
                     expect(!!info).to.be(true);
                     expect(!!info.rid).to.be(true);
                     revId = info.rid;
-                    expect(info.nid).to.eql(revInfo.nid);
-                    expect(info.mid).to.eql(revInfo.mid);
                     expect(info.length).to.eql(revInfo.length);
                     expect(info.hash).to.eql(revInfo.hash);
                     expect(info.content).to.eql(revInfo.content);
                     expect(info.diff).to.eql(revInfo.diff);
-                    expect(info.stamp).to.eql(revInfo.stamp);
                 });
             })
             .then(function(){
                 return that.store.loadRevisionInfo({rid:revId}).then(function(info){
                     expect(!!info).to.be(true);
                     expect(info.rid).to.eql(revId);
-                    expect(info.nid).to.eql(revInfo.nid);
-                    expect(info.mid).to.eql(revInfo.mid);
                     expect(info.length).to.eql(revInfo.length);
                     expect(info.hash).to.eql(revInfo.hash);
                     expect(info.content).to.eql(revInfo.content);
                     expect(info.diff).to.eql(revInfo.diff);
-                    expect(info.stamp).to.eql(revInfo.stamp);
+                });
+            })
+            .then(function(){
+                return that.store.loadRevisionInfoByHash({hash:hash}).then(function(info){
+                    expect(!!info).to.be(true);
+                    expect(info.rid).to.eql(revId);
+                    expect(info.length).to.eql(revInfo.length);
+                    expect(info.hash).to.eql(revInfo.hash);
+                    expect(info.content).to.eql(revInfo.content);
+                    expect(info.diff).to.eql(revInfo.diff);
                 });
             });
         });
@@ -123,7 +121,8 @@ export default class VersionControlTestLib {
             // Store a blob and check that it is available
             .then(function(){
                 return that.store.storeBlob({
-                    content : content
+                    content : content,
+                    hash : hash
                  });
             }).then(function(info){
                 expect(!!info).to.be(true);
