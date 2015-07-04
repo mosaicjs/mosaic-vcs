@@ -46,6 +46,7 @@ export default class VersionControlTestLib {
             this._newRandomValues(second, second.length * 1 / 5, second.length * 2 / 5);
             let firstHash = Digest.digest(first);
             let secondHash = Digest.digest(second);
+            expect(firstHash).to.not.eql(secondHash);
             
             return that.vc.storeResourceRevision({content:first})
             .then(function(info){
@@ -73,6 +74,51 @@ export default class VersionControlTestLib {
                     expect(result.content.toString('hex')).to.eql(second.toString('hex'));
                 });
             });
+        });
+        
+        that._test('should be able to store multiple resource revisions', function() {
+            let count = 30; // Number of revisions
+            let len = 10000; // Length of the resource
+            let first = new Buffer(len);
+            this._newRandomValues(first);
+            let list = [first];
+            while (list.length < count) {
+                let prev = list[list.length - 1];
+                let buf = new Buffer(first.length);
+                prev.copy(buf, 0, 0, prev.length);
+                let from = Math.round(Math.random() * buf.length * 1 / 4 );
+                let to = from + Math.round(Math.random() * buf.length * 3 / 4);
+                this._newRandomValues(buf, from, to);
+                list.push(buf);
+            }
+            let hashes = list.map(function(buf){
+                return Digest.digest(buf);
+            });
+            let promise = Promise.resolve();
+            let base;
+            list.forEach(function(buf, i){
+                promise = promise.then(function(){
+                    return that.vc.storeResourceRevision({
+                        base : base,
+                        content:buf
+                    }).then(function(info){
+                        expect(info.hash).to.eql(hashes[i]);
+                        base = info.hash;
+                    });
+                });
+            });
+            promise.then(function(){
+                return Promise.all(hashes.map(function(hash, i){
+                    return that.vc.loadResourceRevision({hash})
+                        .then(function(result){
+                            expect(result.hash).to.eql(hash);
+                            expect(Digest.digest(result.content)).to.eql(hash);
+                            let buf = list[i];
+                            expect(result.content.toString('hex')).to.eql(buf.toString('hex'));
+                        });
+                }));
+            });
+            return promise;
         });
     }
     

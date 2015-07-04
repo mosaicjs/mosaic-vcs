@@ -13,7 +13,7 @@ describe('SqliteVersionControl', function(){
             });
         },
         deleteStore : function(store) {
-            return remove(url);
+//            return remove(url);
         }
     }).run();
 });
