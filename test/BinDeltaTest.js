@@ -15,19 +15,34 @@ describe('BinDelta', function(){
         if (deltaFile){
             FS.writeFileSync(deltaFile, patch);
         }
-        
     });
+
+    it('should generate diffs for non-intialized buffers', function(){
+        let first = new Buffer(1000 * 1000 * 2);
+        let second = new Buffer(first.length);
+        first.copy(second, 0, 0, first.length);
+        testDiff(first, second);
+     });
+    
+    it('should generate diffs for buffers without modifications', function(){
+        let first = new Buffer(1000 * 1000 * 2);
+        newRandomValues(first);
+        let second = new Buffer(first.length);
+        first.copy(second, 0, 0, first.length);
+        testDiff(first, second);
+     });
     
     it('should generate diffs for random data', function(){
        let first = new Buffer(1000 * 1000 * 2);
        newRandomValues(first);
        let second = new Buffer(first.length);
-       second.copy(first, 0, 0, first.length);
+       first.copy(second, 0, 0, first.length);
        // Artificially change 2/5 of the length
        newRandomValues(second, second.length * 1 / 5, second.length * 2 / 5);
        newRandomValues(second, second.length * 3 / 5, second.length * 4 / 5);
        testDiff(first, second);
     });
+    
     
     function testDiff(first, second){
         let firstHash = Digest.digest(first);
