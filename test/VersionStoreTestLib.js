@@ -33,11 +33,45 @@ export default class VersionControlTestLib {
                 if (error) throw error;
             }).then(done, done);
         });
+        this._testVersions();
         this._testRevInfo();
         this._testPaths();
         this._testBlobs();
     }
 
+    _testVersions(){
+        let that = this;
+        let version = {
+            stamp : new Date().getTime(),
+            iid : 123
+        };
+        let control;
+        that._write('should store/read version information', function(){
+            return Promise.resolve()
+            .then(function(){
+                return that.store.storeVersion(version).then(function(info){
+                    expect(!!info.vid).to.be(true);
+                    expect(info.stamp).to.eql(version.stamp);
+                    expect(info.iid).to.eql(version.iid);
+                    control = info;
+                });
+            })
+            .then(function(){
+                return that.store.loadVersion({vid:control.vid}).then(function(info){
+                    expect(info).to.eql(control);
+                });
+            })
+            .then(function(){
+                version.vid = control.vid;
+                version.stamp += 100000;
+                version.iid = 324;
+                return that.store.storeVersion(version).then(function(info){
+                    expect(info).to.eql(version);
+                });
+            })
+        });
+    }
+    
     _testRevInfo() {
         let that = this;
         that._write('should store/read revision information', function(){
