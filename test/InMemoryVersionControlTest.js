@@ -5,7 +5,8 @@ import VersionControlTestLib from './VersionControlTestLib';
 describe('InMemoryVersionControl', function(){
     let options = {};
     new VersionControlTestLib({
-        store : new MemoryVersionStore(options)
+        newStore : function() { return new MemoryVersionStore(options); },
+        deleteStore : function(store) { }
     }).run();
 });
 
