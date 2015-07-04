@@ -9,7 +9,7 @@ describe('SqliteVersionControl', function(){
     new VersionControlTestLib({
         newStore : function() {
             return remove(url).then(function(){
-                return new SqliteVersionStore({url});
+                return new SqliteVersionStore({url, tablePrefix : 'abc_'});
             });
         },
         deleteStore : function(store) {

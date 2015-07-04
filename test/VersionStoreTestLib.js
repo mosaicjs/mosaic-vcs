@@ -34,7 +34,7 @@ export default class VersionControlTestLib {
             }).then(done, done);
         });
         this._testRevInfo();
-        this._testFileNames();
+        this._testPaths();
         this._testBlobs();
         this._testMimeTypes();
     }
@@ -88,9 +88,9 @@ export default class VersionControlTestLib {
         });
     }
     
-    _testFileNames() {
+    _testPaths() {
         let that = this;
-        that._write('should store/read file names', function(){
+        that._write('should store/read paths', function(){
             let paths = ['foo/bar/file.doc', 'foo/bar/toto.pdf', 'foo/about.md'];
             let pathIndex;
             return Promise.resolve()
