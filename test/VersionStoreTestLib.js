@@ -33,10 +33,35 @@ export default class VersionControlTestLib {
                 if (error) throw error;
             }).then(done, done);
         });
+        this._testChangesets();
         this._testVersions();
         this._testRevInfo();
         this._testPaths();
         this._testBlobs();
+    }
+    
+    _testChangesets(){
+        let that = this;
+        let count = 10;
+        let vid = 50;
+        let mapping = {};
+        for (let i=0; i < count; i++) {
+            mapping[i] = i + count * 2;
+        }
+        that._write('should store/load changeset items', function(){
+            return Promise.resolve().then(function(){
+                return that.store.storeChangeset({ vid, mapping });
+            }).then(function(result){
+                expect(result).to.eql(mapping);
+                let newMapping = {};
+                for (let i = count * 3; i < count * 4; i++) {
+                    mapping[i] = newMapping[i] = i + count * 2;
+                }
+                return that.store.storeChangeset({ vid, mapping: newMapping });
+            }).then(function(result){
+                expect(result).to.eql(mapping);
+            });
+        });
     }
 
     _testVersions(){
