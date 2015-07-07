@@ -4,5 +4,5 @@ require('./BinDeltaTest');
 require('./InMemoryVersionStoreTest');
 require('./SqliteVersionStoreTest');
 
-//require('./InMemoryVersionControlTest');
-//require('./SqliteVersionControlTest');
+require('./InMemoryVersionControlTest');
+require('./SqliteVersionControlTest');
