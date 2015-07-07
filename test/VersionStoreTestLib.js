@@ -33,14 +33,75 @@ export default class VersionControlTestLib {
                 if (error) throw error;
             }).then(done, done);
         });
-        this._testChangesets();
         this._testVersions();
+        this._testVersionRevisions();
+        this._testVersionParents();
         this._testRevInfo();
         this._testPaths();
         this._testBlobs();
     }
     
-    _testChangesets(){
+    _testVersionParents(){
+        let that = this;
+        let v1 = 1;
+        let v2 = 2;
+        let v3 = 3;
+        let v4 = 4;
+        let v5 = 5;
+        that._write('should store/load relations between version', function(){
+            return Promise.all([v1, v2, v3, v4, v5].map(function(vid){
+                return that.store.loadVersionParents({vid: vid})
+                .then(function(parents){
+                    expect(parents).to.eql([]);
+                    return that.store.loadVersionChildren({vid:vid})
+                    .then(function(children){
+                        expect(parents).to.eql([]);
+                    });
+                });
+            }))
+            
+            .then(function(){
+                return Promise.all([
+                    that.store.storeVersionParents({
+                        vid: v2,
+                        parents: [v1]
+                    }).then(function(parents){ expect(parents).to.eql([v1]) }),
+                    that.store.storeVersionParents({
+                        vid: v3,
+                        parents: [v1]
+                    }).then(function(parents){ expect(parents).to.eql([v1]) }),
+                    that.store.storeVersionParents({
+                        vid: v4,
+                        parents: [v2, v3]
+                    }).then(function(parents){ expect(parents).to.eql([v2,v3]) }),
+                    that.store.storeVersionParents({
+                        vid: v5,
+                        parents: [v3]
+                    }).then(function(parents){ expect(parents).to.eql([v3]) })
+                ])
+                .then(function(){
+                    return Promise.all([
+                        that.store.loadVersionParents({ vid: v2 })
+                        .then(function(parents){ expect(parents).to.eql([v1]) }),
+                        
+                        that.store.loadVersionParents({ vid: v3 })
+                        .then(function(parents){ expect(parents).to.eql([v1]) }),
+                        
+                        that.store.loadVersionParents({ vid: v4 })
+                        .then(function(parents){ expect(parents).to.eql([v2,v3]) }),
+                        
+                        that.store.loadVersionParents({ vid: v5 })
+                        .then(function(parents){ expect(parents).to.eql([v3]) })
+                    ]);
+                })
+                .then(function(){
+                    
+                });
+            });
+        });
+    }
+    
+    _testVersionRevisions(){
         let that = this;
         let count = 10;
         let vid = 50;
@@ -48,16 +109,19 @@ export default class VersionControlTestLib {
         for (let i=0; i < count; i++) {
             mapping[i] = i + count * 2;
         }
-        that._write('should store/load changeset items', function(){
+        that._write('should store/load version changeset items', function(){
             return Promise.resolve().then(function(){
-                return that.store.storeChangeset({ vid, mapping });
+                return that.store.storeVersionRevisions({ vid, mapping });
             }).then(function(result){
                 expect(result).to.eql(mapping);
                 let newMapping = {};
                 for (let i = count * 3; i < count * 4; i++) {
                     mapping[i] = newMapping[i] = i + count * 2;
                 }
-                return that.store.storeChangeset({ vid, mapping: newMapping });
+                return that.store.storeVersionRevisions({ vid, mapping: newMapping });
+            }).then(function(result){
+                expect(result).to.eql(mapping);
+                return that.store.loadVersionRevisions({ vid });
             }).then(function(result){
                 expect(result).to.eql(mapping);
             });
