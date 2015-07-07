@@ -1,5 +1,6 @@
 import expect from 'expect.js';
-import { VersionControl, Digest } from '../';
+import vc from '../';
+let Digest = vc.utils.Digest;
 
 export default class VersionControlTestLib {
     
@@ -15,7 +16,7 @@ export default class VersionControlTestLib {
             Promise.resolve().then(function(){
                 return that.newStore();
             }).then(function(store){
-                that.vc = new VersionControl({store: store});
+                that.vc = new vc.VersionControl({store: store});
                 return that.vc.open();
             }).then(done, done);
         });

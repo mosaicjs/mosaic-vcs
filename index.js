@@ -1,12 +1,18 @@
 import VersionControl from './lib/VersionControl';
-import MemoryVersionStore from './lib/MemoryVersionStore';
-import BinDelta from './lib/BinDelta';
-import Digest from './lib/Digest';
-import SqliteVersionStore from './lib/SqliteVersionStore';
+import BinDelta from './lib/utils/BinDelta';
+import Digest from './lib/utils/Digest';
+
+import MemoryVersionStore from './lib/store/MemoryVersionStore';
+import SqliteVersionStore from './lib/store/SqliteVersionStore';
+
 export default {
     VersionControl,
-    MemoryVersionStore,
-    SqliteVersionStore,
-    BinDelta,
-    Digest
+    store : {
+        MemoryVersionStore,
+        SqliteVersionStore,
+    },
+    utils : {
+        BinDelta,
+        Digest
+    }
 }

@@ -1,6 +1,8 @@
 import FS from 'fs';
 import expect from 'expect.js';
-import { BinDelta, Digest } from '../';
+import vc from '../';
+let Digest = vc.utils.Digest;
+let BinDelta = vc.utils.BinDelta;
 
 describe('BinDelta', function(){
     

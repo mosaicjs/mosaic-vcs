@@ -1,6 +1,6 @@
 import expect from 'expect.js';
-import { VersionControl } from '../';
-import { Digest } from '../';
+import vc from '../';
+let Digest = vc.utils.Digest;
 
 export default class VersionControlTestLib {
     

@@ -1,5 +1,5 @@
 import expect from 'expect.js';
-import { SqliteVersionStore } from '../';
+import vc from '../';
 import VersionStoreTestLib from './VersionStoreTestLib';
 import FS from 'fs';
 import Promise from 'promise';
@@ -10,7 +10,7 @@ describe('SqliteVersionStore', function(){
     new VersionStoreTestLib({
         newStore : function() {
             return remove(url).then(function(){
-                return new SqliteVersionStore({url});
+                return new vc.store.SqliteVersionStore({url});
             });
         },
         deleteStore : function(store) {
