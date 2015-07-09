@@ -6,10 +6,11 @@ require('./BinDeltaTest');
 
 function testAll(storeProvider){
     describe('Store', function(){
-        require('./VersionStoreTest').run(storeProvider);
+        require('./VersionStoreTest').run(storeProvider('VersionStoreTest'));
     });
     describe('Model', function() {
-        require('./VcBlobTest').run(storeProvider);
+        require('./VcBlobTest').run(storeProvider('VcBlobTest'));
+        require('./VcRevisionTest').run(storeProvider('VcRevisionTest'));
     });
 }
 
@@ -17,12 +18,14 @@ function testAll(storeProvider){
 // In memory tests
 describe('MemoryVersionStore', function() {
     var vc = require('../');
-    testAll({
-        newStore : function() {
-            return new vc.store.MemoryVersionStore({});
-        },
-        deleteStore : function(store) {
-        }
+    testAll(function(name){
+        return {
+            newStore : function() {
+                return new vc.store.MemoryVersionStore({});
+            },
+            deleteStore : function(store) {
+            }
+        }; 
     });
 });
 
@@ -30,32 +33,41 @@ describe('MemoryVersionStore', function() {
 // Sqlite store
 
 describe('SqliteVersionStore', function() {
-    var url = __dirname + '/SqliteVersionStore.db';
     var Promise = require('promise');
     var FS = require('fs');
     var vc = require('../');
-    try {
-        FS.unlinkSync(url);
-    } catch (err) {
-    }
-    testAll({
-        newStore : function() {
-            return remove(url).then(function() {
-                return new vc.store.SqliteVersionStore({
-                    url : url
-                });
-            });
-        },
-        deleteStore : function(store) {
-            return remove(url);
+    testAll(function(name){
+        var url = __dirname + '/' + name + '.db';
+        try {
+            FS.unlinkSync(url);
+        } catch (err) {
         }
+        return {
+            newStore : function() {
+                return remove(url).then(function() {
+                    return new vc.store.SqliteVersionStore({
+                        url : url
+                    });
+                });
+            },
+            deleteStore : function(store) {
+                return remove(url);
+            }
+        };
     });
 
     function remove(path) {
         return new Promise(function(resolve, reject) {
-            FS.unlink(path, function(err) {
+            if (FS.existsSync(path)) {
+                FS.unlink(path, function(err) {
+                    if (err) {
+                        return reject(err);
+                    }
+                    resolve();
+                });
+            } else {
                 resolve();
-            });
+            }
         });
     }
 });
