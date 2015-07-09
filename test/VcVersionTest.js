@@ -34,18 +34,18 @@ export default class VcVersionTest extends AbstractStoreTest {
             'about/team.md' : 'We are a small team of professionals... Blah-blah-blah...',
             'about/team/Jonh' : { firstName : 'John', lastName: 'Smith', age: 39 },
         }; 
-//        that._test('should be able to build revisions without storing them', function(){
-//            let version = new vc.Version({store:this.store});
-//            return version.buildRevisions({resources})
-//            .then(function(revisions){
-//                return compareResourceRevisions(resources, revisions);
-//            })
-////            .then(function(){
-////                return version.loadRevisions().then(function(revisions){
-////                    return compareResourceRevisions([], []);
-////                });
-////            });
-//        });
+        that._test('should be able to build revisions without storing them', function(){
+            let version = new vc.Version({store:this.store});
+            return version.buildRevisions({resources})
+            .then(function(revisions){
+                return compareResourceRevisions(resources, revisions);
+            })
+            .then(function(){
+                return version.loadRevisions().then(function(revisions){
+                    return compareResourceRevisions([], []);
+                });
+            });
+        });
 
         that._test('should be able to build, store and load revisions', function(){
             let version = new vc.Version({store:this.store});
@@ -61,52 +61,55 @@ export default class VcVersionTest extends AbstractStoreTest {
                 });
             });
         });
-        
-//
-//        that._test('should be able to build, store and load revisions', function(){
-//            let resources1 = {
-//                'first': 'First',
-//                'second' : 'Second',
-//                'third' : 'Third',
-//                'fourth' : 'Fourth'
-//            }
-//            let resources2 = {
-//                'first': 'First ABC',
-//                'second' : 'Second',
-//                'third' : 'Third CDE',
-//                'fourth' : 'XYZ Fourth'
-//            };
-//
-//            let version1 = new vc.Version({store:this.store});
-//            let version2;
-//            return Promise.resolve().then(function(){
-//                return version1.storeResources({resources}).then(function(revisions){
-//                    return compareResourceRevisions(resources1, revisions);
-//                });
-//            })
-//            .then(function(){
-//                return version1.createChildVersion().then(function(ver){
-//                    version2 = ver;
-//                    expect(!!version2).to.eql(true);
-////                    return version2.storeResources({resources}).then(function(revisions){
-////                        return compareResourceRevisions(resources2, revisions);
-////                    }).function(){
-////                        return version2.loadRevisions().then(function(revisions){
-////                            return compareResourceRevisions(resources2, revisions);
-////                        });
-////                    });
-//                });
-//            })
-//            .then(function(){
-////                return version1.loadRevisions().then(function(revisions){
-////                    return compareResourceRevisions(resources1, revisions);
-////                }).then(function(){
-////                    return version2.loadRevisions().then(function(revisions){
-////                        return compareResourceRevisions(resources2, revisions);
-////                    });
-////                });
-//            });
-//        });
+
+        that._test('should be able to build, store and load revisions', function(){
+            let resources1 = {
+                'first': 'First',
+                'second' : 'Second',
+                'third' : 'Third',
+                'fourth' : 'Fourth'
+            }
+            let resources2 = {
+                'first': 'First ABC',
+                'second' : 'Second',
+                'third' : 'Third CDE',
+                'fourth' : 'XYZ Fourth'
+            };
+
+            let version1 = new vc.Version({store:this.store});
+            let version2;
+            return Promise.resolve().then(function(){
+                return version1.storeResources({
+                    resources : resources1
+                }).then(function(revisions){
+                    return compareResourceRevisions(resources1, revisions);
+                });
+            })
+            .then(function(){
+                return version1.createChildVersion().then(function(ver){
+                    version2 = ver;
+                    expect(!!version2).to.eql(true);
+                    return version2.storeResources({
+                        resources : resources2
+                    }).then(function(revisions){
+                        return compareResourceRevisions(resources2, revisions);
+                    }).then(function(){
+                        return version2.loadRevisions().then(function(revisions){
+                            return compareResourceRevisions(resources2, revisions);
+                        });
+                    });
+                });
+            })
+            .then(function(){
+                return version1.loadRevisions().then(function(revisions){
+                    return compareResourceRevisions(resources1, revisions);
+                }).then(function(){
+                    return version2.loadRevisions().then(function(revisions){
+                        return compareResourceRevisions(resources2, revisions);
+                    });
+                });
+            });
+        });
     }
     
 }
