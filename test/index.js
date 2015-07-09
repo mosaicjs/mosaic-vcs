@@ -2,16 +2,16 @@ var expect = require('expect.js');
 require('babel/register');
 require('./BinDeltaTest');
 
-//---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
 
-function testAll(storeProvider){
-    describe('Store', function(){
+function testAll(storeProvider) {
+    describe('Store', function() {
         require('./VersionStoreTest').run(storeProvider('VersionStoreTest'));
     });
     describe('Model', function() {
-        require('./VcBlobTest').run(storeProvider('VcBlobTest'));
-        require('./VcRevisionTest').run(storeProvider('VcRevisionTest'));
-        require('./VcVersionTest').run(storeProvider('VcVersionTest'));
+        // require('./VcBlobTest').run(storeProvider('VcBlobTest'));
+        // require('./VcRevisionTest').run(storeProvider('VcRevisionTest'));
+        // require('./VcVersionTest').run(storeProvider('VcVersionTest'));
     });
 }
 
@@ -19,14 +19,14 @@ function testAll(storeProvider){
 // In memory tests
 describe('MemoryVersionStore', function() {
     var vc = require('../');
-    testAll(function(name){
+    testAll(function(name) {
         return {
             newStore : function() {
                 return new vc.store.MemoryVersionStore({});
             },
             deleteStore : function(store) {
             }
-        }; 
+        };
     });
 });
 
@@ -37,7 +37,7 @@ describe('SqliteVersionStore', function() {
     var Promise = require('promise');
     var FS = require('fs');
     var vc = require('../');
-    testAll(function(name){
+    testAll(function(name) {
         var url = __dirname + '/' + name + '.db';
         try {
             FS.unlinkSync(url);
@@ -52,16 +52,16 @@ describe('SqliteVersionStore', function() {
                 });
             },
             deleteStore : function(store) {
-//                return remove(url);
+                return remove(url);
             }
         };
     });
 
     function remove(path) {
         return new Promise(function(resolve, reject) {
-            if (FS.existsSync(path)) {
+            if (FS.existsSync(path)) {
                 FS.unlink(path, function(err) {
-                    if (err) {
+                    if (err) {
                         return reject(err);
                     }
                     resolve();
@@ -72,5 +72,3 @@ describe('SqliteVersionStore', function() {
         });
     }
 });
-
-

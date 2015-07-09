@@ -9,14 +9,10 @@ describe('BinDelta', function(){
     it('should create a binary delta object', function(){
         let firstFile = __dirname + '/BinDeltaTest-lorem.1.txt';
         let secondFile = __dirname + '/BinDeltaTest-lorem.2.txt';
-        let deltaFile = __dirname + '/BinDeltaTest-lorem.bindiff';
 
         let first = FS.readFileSync(firstFile);
         let second  = FS.readFileSync(secondFile);
-        let patch = testDiff(first, second);
-        if (deltaFile){
-            FS.writeFileSync(deltaFile, patch);
-        }
+        testDiff(first, second);
     });
 
     it('should generate diffs for non-intialized buffers', function(){
