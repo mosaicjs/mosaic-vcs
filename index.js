@@ -1,4 +1,4 @@
-import VersionControl from './lib/VersionControl';
+import Blob from './lib/Blob';
 import BinDelta from './lib/utils/BinDelta';
 import Digest from './lib/utils/Digest';
 
@@ -6,7 +6,7 @@ import MemoryVersionStore from './lib/store/MemoryVersionStore';
 import SqliteVersionStore from './lib/store/SqliteVersionStore';
 
 export default {
-    VersionControl,
+    Blob,
     store : {
         MemoryVersionStore,
         SqliteVersionStore,

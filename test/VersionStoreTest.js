@@ -1,38 +1,11 @@
 import expect from 'expect.js';
 import vc from '../';
+import AbstractStoreTest from './AbstractStoreTest';
 let Digest = vc.utils.Digest;
 
-export default class VersionControlTestLib {
-    
-    constructor(options){
-        options = options || {};
-        this.newStore = options.newStore;
-        this.deleteStore = options.deleteStore;
-    }
+export default class VersionControlTest extends AbstractStoreTest {
 
-    run(){
-        let that = this;
-        before(function(done){
-            Promise.resolve().then(function(){
-                return that.newStore();
-            }).then(function(store){
-                that.store = store;
-                return that.store.open();
-            }).then(done, done);
-        });
-        after(function(done){
-            let error;
-            Promise.resolve().then(function(){
-                return that.store.close();  
-            }).then(null, function(err){
-                error = err;
-            }).then(function(){
-                return that.deleteStore(that.store);
-            }).then(function(){
-                delete that.store;
-                if (error) throw error;
-            }).then(done, done);
-        });
+    testAll(){
         this._testVersions();
         this._testVersionRevisions();
         this._testVersionParents();
@@ -273,26 +246,6 @@ export default class VersionControlTestLib {
             }).then(function(info){
                 expect(info).to.be(undefined);
             });
-        });
-    }
-    
-    // ------------------------------------------------------------------
-    // Utility test methods
-    
-    _write(msg, f) { 
-        let that = this;
-        it(msg, function(done){
-            that.store.writeTransaction(function(){
-                return f.apply(that);
-            }).then(done, done);
-        });
-    }
-    _read(msg, f) { 
-        let that = this;
-        it(msg, function(done){
-            that.store.readTransaction(function(){
-                return f.apply(that);
-            }).then(done, done);
         });
     }
     
