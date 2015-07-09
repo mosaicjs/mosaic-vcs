@@ -187,19 +187,29 @@ export default class VersionControlTest extends AbstractStoreTest {
         let that = this;
         that._write('should store/read paths', function(){
             let paths = ['foo/bar/file.doc', 'foo/bar/toto.pdf', 'foo/about.md'];
+            let pids;
             let pathIndex;
             return Promise.resolve()
             .then(function(){
                 return that.store.storePaths({paths}).then(function(info){
                     expect(!!info).to.be(true);
-                    expect(Object.keys(info).sort()).to.eql(paths.sort());
+                    let testPaths = Object.keys(info).sort();
+                    expect(testPaths).to.eql(paths.sort());
+                    pids = testPaths.map(function(path){
+                        return info[path];
+                    });
                     pathIndex = info;
                 });
             })
             .then(function(){
                 return that.store.loadPaths({paths}).then(function(info){
                     expect(info).to.eql(pathIndex);
-                })
+                });
+            })
+            .then(function(){
+                return that.store.loadPaths({pids}).then(function(info){
+                    expect(info).to.eql(pathIndex);
+                });
             });
         });
     }

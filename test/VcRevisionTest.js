@@ -13,13 +13,11 @@ export default class VcRevisionTest extends AbstractStoreTest {
         let that = this;
         that._test('should create empty revisions', function(){
             let path = 'path/to/my/resource.json';
-            let pid = 0;
             let rev = new vc.Revision({
                 store: that.store,
-                pid : pid,
                 path : path
             });
-            expect(rev.pid).to.eql(pid);
+            expect(rev.pid).to.eql(0);
             expect(rev.path).to.eql(path);
             return rev.blob.loadContent()
             .then(function(content){
@@ -51,16 +49,14 @@ export default class VcRevisionTest extends AbstractStoreTest {
             expect(firstHash).to.not.eql(secondHash);
             
             let path = 'path/to/my/resource.json';
-            let pid = 0;
             let empty = new vc.Revision({
                 store: that.store,
-                pid : pid,
                 path : path
             });
             let rev1;
             return Promise.resolve().then(function(){
                 return empty.newRevision(first).then(function(rev){
-                    expect(rev.pid).to.eql(pid);
+                    expect(rev.pid > 0).to.be(true);
                     expect(rev.path).to.eql(path);
                     rev1 = rev;
                     return that._testBlobContent(rev.blob, first, {
@@ -71,7 +67,7 @@ export default class VcRevisionTest extends AbstractStoreTest {
             })
             .then(function(){
                 return rev1.newRevision(second).then(function(rev){
-                    expect(rev.pid).to.eql(pid);
+                    expect(rev.pid).to.eql(rev1.pid);
                     expect(rev.path).to.eql(path);
                     return that._testBlobContent(rev.blob, second, {
                         hash: secondHash,

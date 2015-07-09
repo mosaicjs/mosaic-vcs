@@ -11,6 +11,7 @@ function testAll(storeProvider){
     describe('Model', function() {
         require('./VcBlobTest').run(storeProvider('VcBlobTest'));
         require('./VcRevisionTest').run(storeProvider('VcRevisionTest'));
+        require('./VcVersionTest').run(storeProvider('VcVersionTest'));
     });
 }
 
@@ -51,7 +52,7 @@ describe('SqliteVersionStore', function() {
                 });
             },
             deleteStore : function(store) {
-                return remove(url);
+//                return remove(url);
             }
         };
     });
