@@ -11,6 +11,30 @@ export default class VcBlobTest extends AbstractStoreTest {
     
     _testBlob() {
         let that = this;
+        that._test('should be able to store multiple times the same buffer', function() {
+            let len = 10000;
+            len = 0;
+            let first = new Buffer(len);
+            that._newRandomValues(first);
+            let firstHash = Digest.digest(first);
+            let empty = new vc.Blob({store: that.store});
+            let promises = [];
+            for (let i = 0; i < 20; i++) {
+                promises.push(
+                    Promise.resolve()
+                    .then(function(){
+                        return empty.newBlob({content:first})
+                    }).then(function(firstBlob){
+                        return that._testBlobContent(firstBlob, first, {
+                            hash: firstHash,
+                            length : first.length
+                        });
+                    })
+                );
+            }
+            return Promise.all(promises);
+        });
+
         that._test('should accept empty content', function(){
             let blob = new vc.Blob({ store:that.store });
             return Promise.resolve().then(function(){
@@ -32,30 +56,7 @@ export default class VcBlobTest extends AbstractStoreTest {
                 });
             });
         });
-        
-        that._test('should be able to store multiple times the same buffer', function() {
-            let len = 10000;
-            let first = new Buffer(len);
-            that._newRandomValues(first);
-            let firstHash = Digest.digest(first);
-            let empty = new vc.Blob({store: that.store});
-            let promises = [];
-            for (let i = 0; i < 2; i++) {
-                promises.push(
-                    Promise.resolve()
-                    .then(function(){
-                        return empty.newBlob({content:first})
-                    }).then(function(firstBlob){
-                        return that._testBlobContent(firstBlob, first, {
-                            hash: firstHash,
-                            length : first.length
-                        });
-                    })
-                );
-            }
-            return Promise.all(promises);
-        });
-    
+                
         that._test('should be able to store new resource revisions', function() {
             let len = 10000;
             let first = new Buffer(len);

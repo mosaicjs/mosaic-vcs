@@ -150,16 +150,18 @@ export default class AbstractStoreTest {
     _write(msg, f) { 
         let that = this;
         it(msg, function(done){
-            that.store.writeTransaction(function(){
+            return Promise.resolve().then(function(){
                 return f.apply(that);
+            }).then(function(){
             }).then(done, done);
         });
     }
     _read(msg, f) { 
         let that = this;
         it(msg, function(done){
-            that.store.readTransaction(function(){
+            return Promise.resolve().then(function(){
                 return f.apply(that);
+            }).then(function(){
             }).then(done, done);
         });
     }    

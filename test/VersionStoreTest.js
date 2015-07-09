@@ -76,7 +76,7 @@ export default class VersionControlTest extends AbstractStoreTest {
     
     _testVersionRevisions(){
         let that = this;
-        let count = 100;
+        let count = 30;
         let versionId = 50;
         let mapping = {};
         for (let i=0; i < count; i++) {
