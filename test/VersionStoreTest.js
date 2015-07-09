@@ -76,20 +76,24 @@ export default class VersionControlTest extends AbstractStoreTest {
     
     _testVersionRevisions(){
         let that = this;
-        let count = 10;
+        let count = 100;
         let vid = 50;
         let mapping = {};
         for (let i=0; i < count; i++) {
             mapping[i] = i + count * 2;
         }
+        let newMapping = {};
+        for (let i = Math.round(count * 3 / 5) ; i < Math.round(count * 4 / 5); i++) {
+            newMapping[i] = i + count * 2;
+        }
+        
         that._write('should store/load version changeset items', function(){
             return Promise.resolve().then(function(){
                 return that.store.storeVersionRevisions({ vid, mapping });
             }).then(function(result){
                 expect(result).to.eql(mapping);
-                let newMapping = {};
-                for (let i = count * 3; i < count * 4; i++) {
-                    mapping[i] = newMapping[i] = i + count * 2;
+                for (let i in newMapping) {
+                    mapping[i] = newMapping[i];
                 }
                 return that.store.storeVersionRevisions({ vid, mapping: newMapping });
             }).then(function(result){
@@ -97,6 +101,13 @@ export default class VersionControlTest extends AbstractStoreTest {
                 return that.store.loadVersionRevisions({ vid });
             }).then(function(result){
                 expect(result).to.eql(mapping);
+                return that.store.storeVersionRevisions({
+                    vid,
+                    mapping : newMapping,
+                    replace : true
+                });
+            }).then(function(result){
+                expect(result).to.eql(newMapping);
             });
         });
     }
