@@ -17,7 +17,7 @@ export default class VcRevisionTest extends AbstractStoreTest {
                 store: that.store,
                 path : path
             });
-            expect(rev.pid).to.eql(0);
+            expect(rev.pathId).to.eql(0);
             expect(rev.path).to.eql(path);
             return rev.blob.loadContent()
             .then(function(content){
@@ -31,8 +31,8 @@ export default class VcRevisionTest extends AbstractStoreTest {
                     expect(!!meta).to.be(true);
                     expect(meta.hash).to.eql(vc.Blob.EMPTY_HASH);
                     expect(meta.length).to.be(0);
-                    expect(meta.content).to.be(0);
-                    expect(meta.diff).to.be(0);
+                    expect(meta.contentId).to.be(0);
+                    expect(meta.diffId).to.be(0);
                 });
             });
         });
@@ -56,7 +56,7 @@ export default class VcRevisionTest extends AbstractStoreTest {
             let rev1;
             return Promise.resolve().then(function(){
                 return empty.newRevision(first).then(function(rev){
-                    expect(rev.pid > 0).to.be(true);
+                    expect(rev.pathId > 0).to.be(true);
                     expect(rev.path).to.eql(path);
                     rev1 = rev;
                     return that._testBlobContent(rev.blob, first, {
@@ -67,7 +67,7 @@ export default class VcRevisionTest extends AbstractStoreTest {
             })
             .then(function(){
                 return rev1.newRevision(second).then(function(rev){
-                    expect(rev.pid).to.eql(rev1.pid);
+                    expect(rev.pathId).to.eql(rev1.pathId);
                     expect(rev.path).to.eql(path);
                     return that._testBlobContent(rev.blob, second, {
                         hash: secondHash,

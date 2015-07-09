@@ -27,8 +27,8 @@ export default class VcBlobTest extends AbstractStoreTest {
                     expect(!!meta).to.be(true);
                     expect(meta.hash).to.eql(vc.Blob.EMPTY_HASH);
                     expect(meta.length).to.be(0);
-                    expect(meta.content).to.be(0);
-                    expect(meta.diff).to.be(0);
+                    expect(meta.contentId).to.be(0);
+                    expect(meta.diffId).to.be(0);
                 });
             });
         });
