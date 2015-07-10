@@ -110,6 +110,11 @@ export default class VcVersionTest extends AbstractStoreTest {
                 });
             });
         });
+        
+        that._test('should be able store multiple resources', function(){
+            
+            
+        })
     }
     
 }
