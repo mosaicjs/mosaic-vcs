@@ -121,14 +121,16 @@ export default class AbstractStoreTest {
         let len = Math.round(minLength + Math.random()*(maxLength - minLength));
         let base = new Buffer(len);
         this._newRandomValues(base);
+        let prev = base;
         for (let i = 0; i < count; i++) {
             let buf = new Buffer(len);
-            buf.copy(base, 0, 0, len);
+            buf.copy(prev, 0, 0, len);
             let start = len / 4;
             let from = Math.round(Math.random() * start);
             let to = from + Math.round(Math.random() * (len - from - start));
             this._newRandomValues(buf, from, to);
             buffers.push(buf);
+            prev = buf;
         }
         return buffers;
     }
