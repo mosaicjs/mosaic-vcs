@@ -116,7 +116,7 @@ export default class VersionControlTest extends AbstractStoreTest {
         let that = this;
         let version = {
             stamp : new Date().getTime(),
-            iid : 123
+            metadataId : 123
         };
         let control;
         that._write('should store/read version information', function(){
@@ -125,7 +125,7 @@ export default class VersionControlTest extends AbstractStoreTest {
                 return that.store.storeVersion(version).then(function(info){
                     expect(!!info.versionId).to.be(true);
                     expect(info.stamp).to.eql(version.stamp);
-                    expect(info.iid).to.eql(version.iid);
+                    expect(info.metadataId).to.eql(version.metadataId);
                     control = info;
                 });
             })
@@ -137,7 +137,7 @@ export default class VersionControlTest extends AbstractStoreTest {
             .then(function(){
                 version.versionId = control.versionId;
                 version.stamp += 100000;
-                version.iid = 324;
+                version.metadataId = 324;
                 return that.store.storeVersion(version).then(function(info){
                     expect(info).to.eql(version);
                 });
