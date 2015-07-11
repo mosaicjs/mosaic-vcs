@@ -55,7 +55,7 @@ export default class VcRevisionTest extends AbstractStoreTest {
             });
             let rev1;
             return Promise.resolve().then(function(){
-                return empty.newRevision(first).then(function(rev){
+                return empty.newRevision({content:first}).then(function(rev){
                     expect(rev.pathId > 0).to.be(true);
                     expect(rev.path).to.eql(path);
                     rev1 = rev;
@@ -66,7 +66,7 @@ export default class VcRevisionTest extends AbstractStoreTest {
                 })
             })
             .then(function(){
-                return rev1.newRevision(second).then(function(rev){
+                return rev1.newRevision({content:second}).then(function(rev){
                     expect(rev.pathId).to.eql(rev1.pathId);
                     expect(rev.path).to.eql(path);
                     return that._testBlobContent(rev.blob, second, {
